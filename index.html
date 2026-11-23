@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Step Dice</title>
+  <style>
+    :root, [data-theme="dark"] {
+      --plate: #17191d; --panel: #202328; --well: #121417; --edge: #2f333a; --line: #2a2e34;
+      --text: #ecebe6; --dim: #868b94; --silk: #b9bdc5; --cell: #2a2e35; --beat: #33383f;
+      --acc: #6cc7ff; --acc2: #a6dcff; --glow: rgba(108,199,255,.35); --ok: #7fd9a4; --bad: #ff8a80; --ink: #0f1a22; --now: rgba(255,255,255,.10);
+      color-scheme: dark;
+    }
+    [data-theme="grey"] {
+      --plate: #4a4e55; --panel: #555a62; --well: #41454b; --edge: #6a6f78; --line: #60656d;
+      --text: #f4f3ef; --dim: #c4c7cc; --silk: #dfe1e5; --cell: #626770; --beat: #6b7079;
+      --acc: #8ad5ff; --acc2: #c2e8ff; --glow: rgba(138,213,255,.35); --ok: #a3ecc0; --bad: #ffb3a8; --ink: #0f1a22; --now: rgba(255,255,255,.16);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { background: var(--plate); color: var(--text); font: 13px/1.4 ui-rounded, "SF Pro Rounded", system-ui, sans-serif; display: flex; flex-direction: column; user-select: none; -webkit-font-smoothing: antialiased; }
+    button, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+    .ico { width: 15px; height: 15px; display: block; }
+    header { display: flex; align-items: center; padding: 10px 14px 6px; gap: 10px; }
+    h1 { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.01em; }
+    h1 small { font-weight: 600; color: var(--dim); font-size: 11px; margin-left: 4px; }
+    .grow { flex: 1; }
+    .theme { display: flex; background: var(--well); border: 1px solid var(--edge); border-radius: 8px; padding: 2px; }
+    .theme button { width: 24px; height: 20px; border: 0; border-radius: 6px; background: none; display: grid; place-items: center; padding: 0; color: var(--dim); }
+    .theme button.on { background: var(--panel); color: var(--text); }
+    .theme svg { width: 12px; height: 12px; }
+    #clipName { width: 104px; background: var(--well); border: 1px solid var(--edge); border-radius: 7px; padding: 3px 7px; font: 700 12px ui-rounded, system-ui, sans-serif; color: var(--text); text-transform: uppercase; letter-spacing: .03em; }
+    select { background: var(--well); border: 1px solid var(--edge); border-radius: 7px; padding: 3px 6px; font-size: 12px; }
+    main { flex: 1; overflow: auto; padding: 2px 14px 10px; display: flex; flex-direction: column; gap: 9px; }
+    .bar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .lbl { color: var(--dim); font-size: 11px; font-weight: 600; }
+    .btn { border: 1px solid var(--edge); background: var(--well); border-radius: 8px; padding: 4px 10px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; }
+    .btn:hover { border-color: var(--silk); }
+    .btn.main { background: var(--acc); border-color: var(--acc); color: var(--ink); }
+    .btn:disabled { opacity: .4; cursor: default; }
+    .btn .ico { width: 16px; height: 16px; }
+    #dice { background: var(--acc); border-color: var(--acc); color: var(--ink); padding: 4px 12px 4px 9px; }
+    #dice .ico { width: 18px; height: 18px; }
+    .switch { display: inline-flex; align-items: center; gap: 7px; border: 0; background: none; padding: 2px; font-weight: 700; font-size: 12px; color: var(--silk); }
+    .switch::before { content: ""; width: 30px; height: 17px; border-radius: 9px; background: radial-gradient(circle at 8.5px 50%, #fff 5.5px, transparent 6px), var(--edge); transition: background .15s; }
+    .switch.on::before { background: radial-gradient(circle at 21.5px 50%, #fff 5.5px, transparent 6px), var(--acc); }
+    .pill { display: inline-flex; align-items: center; gap: 6px; background: var(--panel); border-radius: 999px; padding: 3px 4px 3px 10px; font-size: 12px; color: var(--dim); }
+    .pill b { color: var(--text); }
+    .pill .btn { border-radius: 999px; padding: 2px 9px; font-size: 11.5px; }
+    .grid { background: var(--panel); border-radius: 12px; padding: 8px 10px 10px; display: grid; gap: 4px 3px; align-items: center; }
+    .corner { height: 1px; }
+    .block { display: flex; align-items: center; gap: 2px; border-bottom: 1px solid var(--line); padding: 0 0 3px; min-width: 0; }
+    .block.gap { margin-left: 6px; }
+    .blab { color: var(--dim); font-size: 10.5px; font-weight: 700; flex: 1; font-variant-numeric: tabular-nums; }
+    .ib { border: 0; background: none; color: var(--dim); padding: 2px; border-radius: 5px; display: grid; place-items: center; }
+    .ib:hover { color: var(--text); background: var(--well); }
+    .ib.on { color: var(--acc); }
+    .ib.off { opacity: .35; }
+    .num { text-align: center; font-size: 9.5px; color: var(--dim); opacity: .55; font-variant-numeric: tabular-nums; border-radius: 3px; }
+    .num.beatn { opacity: 1; font-weight: 700; }
+    .num.now { background: var(--acc); color: var(--ink); opacity: 1; }
+    .head { display: flex; align-items: center; gap: 5px; min-width: 0; padding-right: 6px; }
+    .head .nm { font-weight: 700; font-size: 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .head.muted .nm { color: var(--dim); text-decoration: line-through; }
+    .head select { width: 50px; padding: 1px 2px; font-size: 11px; border-radius: 5px; }
+    .mute { width: 18px; height: 18px; border-radius: 5px; border: 1px solid var(--edge); background: var(--well); color: var(--dim); font-size: 10px; font-weight: 800; padding: 0; }
+    .mute.on { background: var(--bad); border-color: var(--bad); color: var(--ink); }
+    .cell { height: 26px; border-radius: 5px; border: 0; background: var(--cell); padding: 0; transition: background .08s, box-shadow .08s; }
+    .cell.beat { background: var(--beat); }
+    .cell:hover { box-shadow: inset 0 0 0 1.5px var(--silk); }
+    .cell.on { background: var(--acc); box-shadow: 0 0 10px var(--glow); }
+    .cell.on.acc { background: var(--acc2); position: relative; }
+    .cell.on.acc::after { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--ink); opacity: .7; }
+    .seg button.on.hitacc { background: var(--acc2); color: var(--ink); }
+    .cell.on.soft { background: color-mix(in srgb, var(--acc) 45%, var(--cell)); box-shadow: none; }
+    .cell.on.dim { opacity: .35; box-shadow: none; }
+    .cell.gap, .num.gap { margin-left: 6px; }
+    .cell.now { box-shadow: inset 0 0 0 100px var(--now); }
+    .cell.on.now { box-shadow: 0 0 14px var(--glow), inset 0 0 0 2px #fff; }
+    .head .nm { cursor: pointer; }
+    .head.sel .nm { color: var(--acc); }
+    .gen { display: flex; align-items: center; gap: 14px; background: var(--panel); border-radius: 12px; padding: 6px 12px; }
+    .gtitle { display: flex; flex-direction: column; min-width: 120px; }
+    .gtitle b { font-size: 14px; color: var(--acc); }
+    .knobs { display: flex; gap: 14px; flex: 1; }
+    .knob { display: flex; flex-direction: column; align-items: center; width: 62px; }
+    .knob svg { width: 40px; height: 40px; cursor: ns-resize; touch-action: none; }
+    .kl { font-size: 10.5px; color: var(--dim); font-weight: 700; }
+    .kv { font-size: 11.5px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .ktrack { fill: none; stroke: var(--cell); stroke-width: 4; stroke-linecap: round; }
+    .kval { fill: none; stroke: var(--acc); stroke-width: 4; stroke-linecap: round; }
+    .kptr { stroke: var(--text); stroke-width: 2.5; stroke-linecap: round; }
+    .gacts { display: flex; gap: 6px; }
+    .btn.tog.on { background: var(--acc2); border-color: var(--acc2); color: var(--ink); }
+    .seg { display: inline-flex; background: var(--well); border: 1px solid var(--edge); border-radius: 8px; padding: 2px; }
+    .seg button { border: 0; background: none; border-radius: 6px; padding: 2px 8px; font-size: 11.5px; font-weight: 700; color: var(--dim); }
+    .seg button.on { background: var(--panel); color: var(--text); }
+    .foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .status { font-size: 12px; color: var(--dim); min-height: 1.4em; text-align: right; white-space: nowrap; }
+    .status.ok { color: var(--ok); } .status.bad { color: var(--bad); }
+    .hint { color: var(--dim); font-size: 11px; }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Step Dice <small id="ver"></small></h1>
+    <span class="pill"><span id="target"></span><button class="btn" id="useTrack"></button></span>
+    <span class="grow"></span>
+    <div class="theme">
+      <button data-t="dark" id="tDark"><svg viewBox="0 0 16 16"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="currentColor"/></svg></button>
+      <button data-t="grey" id="tGrey"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 2.5a5.5 5.5 0 0 1 0 11z" fill="currentColor"/></svg></button>
+    </div>
+    <select id="lang"></select>
+  </header>
+  <main>
+    <div class="bar">
+      <span class="lbl" id="stepsLabel"></span><select id="steps"></select>
+      <span class="lbl" id="resLabel"></span><select id="res"></select>
+      <span class="lbl" id="hitLabel"></span><div class="seg" id="hit"></div>
+      <span class="lbl" id="clipLabel"></span><input id="clipName" list="clipNames" spellcheck="false" autocomplete="off">
+      <datalist id="clipNames"><option>INTRO</option><option>VERSE</option><option>PRE-CHORUS</option><option>CHORUS</option><option>BRIDGE</option><option>BREAK</option><option>FILL</option><option>OUTRO</option></datalist>
+      <span class="grow"></span>
+      <button class="switch" id="live"></button>
+      <button class="btn main" id="write"></button>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="gen">
+      <div class="gtitle"><span class="lbl" id="genLabel"></span><b id="genName"></b></div>
+      <div class="knobs" id="knobs"></div>
+      <div class="gacts"><button class="btn" id="genRoll"></button><button class="btn tog" id="genAuto"></button><button class="btn" id="genGo"></button></div>
+    </div>
+    <div class="bar">
+      <button class="btn" id="dice"></button>
+      <button class="btn" id="vary"></button>
+      <span class="lbl" id="densLabel"></span><div class="seg" id="dens"></div>
+      <span class="seg"><button id="back">←</button><button id="fwd">→</button></span>
+      <span class="grow"></span>
+      <button class="btn" id="copy"></button><button class="btn" id="paste"></button><button class="btn" id="clear"></button>
+    </div>
+    <div class="foot"><div class="hint" id="hint"></div><div class="status" id="status" role="status"></div></div>
+  </main>
+  <script src="vendor/luna.global.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#262a30"/><stop offset="1" stop-color="#121417"/></linearGradient></defs>
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+  <g fill="#2f343b">
+    <rect x="36" y="44" width="28" height="28" rx="7"/><rect x="72" y="44" width="28" height="28" rx="7" fill="#6cc7ff"/><rect x="108" y="44" width="28" height="28" rx="7"/><rect x="144" y="44" width="28" height="28" rx="7" fill="#6cc7ff"/><rect x="180" y="44" width="28" height="28" rx="7"/>
+    <rect x="36" y="80" width="28" height="28" rx="7" fill="#6cc7ff"/><rect x="72" y="80" width="28" height="28" rx="7"/><rect x="108" y="80" width="28" height="28" rx="7" fill="#a6dcff"/><rect x="144" y="80" width="28" height="28" rx="7"/>
+    <rect x="36" y="116" width="28" height="28" rx="7"/><rect x="72" y="116" width="28" height="28" rx="7" fill="#6cc7ff"/>
+    <rect x="36" y="152" width="28" height="28" rx="7" fill="#6cc7ff"/><rect x="72" y="152" width="28" height="28" rx="7"/>
+  </g>
+  <g transform="rotate(-12 166 168)">
+    <rect x="114" y="116" width="104" height="104" rx="24" fill="#ecebe6" stroke="#121417" stroke-width="7"/>
+    <g fill="#1b2a36"><circle cx="142" cy="144" r="9.5"/><circle cx="190" cy="144" r="9.5"/><circle cx="166" cy="168" r="9.5"/><circle cx="142" cy="192" r="9.5"/><circle cx="190" cy="192" r="9.5"/></g>
+  </g>
+</svg>
