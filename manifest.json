@@ -3,12 +3,10 @@
     "id": "com.fedetrillo.stepdice",
     "title": "Step Dice",
     "name": "Step Dice",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "manufacturer": "Fede Trillo",
     "contact": "fedetrillo@gmail.com",
-    "description": [
-        "A drum step sequencer for LUNA that writes its pattern into a MIDI clip over the loop, so you hear every change as it plays. Roll the die for new patterns or variations, shape each drum with Hits, Pattern and Shift, accents, 8-step copy and repeat, and named clips (VERSE, CHORUS…)."
-    ],
+    "description": "Program drums while the loop plays. Click steps or roll the die for a new groove: Step Dice writes the pattern into a MIDI clip in LUNA as you go, so every change plays on the next pass. A generator per drum, accents, variations and named clips for each section. Getting-started guide, 7 languages.",
     "categories": [
         "MIDI",
         "Create"
