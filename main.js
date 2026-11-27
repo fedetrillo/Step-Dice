@@ -4,7 +4,7 @@
 
 (() => {
   const $ = (id) => document.getElementById(id);
-  const VERSION = '1.0.1';
+  const VERSION = '1.0.2';
   const KEY = 'com.fedetrillo.stepdice.';
   const store = {
     get: (k) => { try { return JSON.parse(localStorage.getItem(KEY + k)); } catch { return null; } },
@@ -463,7 +463,7 @@
       if (!ev.altKey) return;
       const tk = targetId && s.tracks.byId(targetId);
       const text = JSON.stringify({ version: VERSION, target: tk?.name.value, span: span(), playing: tr.playing.value, looping: tr.looping.value, st: { steps: st.steps, res: st.res, live: st.live, notes: st.notes }, log }, null, 2);
-      try { await navigator.clipboard.writeText(text); say('report', {}, 'ok', 2500); } catch { /* nothing */ }
+      try { if (await AddOnCopy(text)) say('report', {}, 'ok', 5000); } catch { /* nothing */ }
     };
     for (const p of [tr.loopStart, tr.loopStop, tr.looping, ctx.selectionStart, ctx.selectionStop, tr.playStart]) p?.onChange?.(() => paintTarget());
     paintTarget();

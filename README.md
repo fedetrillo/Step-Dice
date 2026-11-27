@@ -1,9 +1,8 @@
 # Step Dice for LUNA
 
-A drum step sequencer for LUNA with a die. It writes the pattern as notes into a MIDI clip over
-LUNA's loop, so LUNA plays it with sample-accurate timing and you hear every change on the next
-pass while the loop keeps playing. Roll the die for a new groove, vary it, shape each drum with
-Hits, Pattern and Shift, accent the hits that matter, and name the clip VERSE, CHORUS or INTRO.
+Program drums while the loop plays. Click steps or roll the die for a new groove: Step Dice
+writes the pattern into a MIDI clip in LUNA as you go, so every change plays on the next pass. A
+generator per drum, accents, variations and named clips for each section.
 
 <p>
   <img src="docs/screenshot-dark.png" alt="Step Dice, dark theme" width="460">
